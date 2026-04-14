@@ -385,7 +385,7 @@
   .reveal-right.visible{opacity:1;transform:translateX(0);}
 
   /* ── RESPONSIVE ── */
-  @media(max-width:768px){
+  @media(max-width:1780px){
     .nav-links,.nav-cta-desktop{display:none;}
     .hamburger{display:flex;}
     .why-grid{grid-template-columns:1fr;}
@@ -393,10 +393,14 @@
     .footer-grid{grid-template-columns:1fr;}
     .hero-stats{gap:1.5rem;}
     .cta-box{padding:2.5rem 1.5rem;}
-  }
-  @media(max-width:480px){
-    .hero h1{font-size:2rem;}
-    .hero-btns{flex-direction:column;align-items:center;}
+    .hero{
+      min-height:50vh;
+      background-size:cover;
+      background-position:center top;
+      padding-bottom:7rem;
+      background-image: url("img/landing-mobile.jpg");
+    }
+    .hero-content{padding:1.5rem 1.25rem;}
   }
 </style>
 </head>
