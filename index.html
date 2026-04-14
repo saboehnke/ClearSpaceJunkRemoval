@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ClearSpace Junk Removal | Southern Illinois</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --blue:#1565C0;
+    --blue-dark:#0D47A1;
+    --blue-light:#1E88E5;
+    --blue-pale:#E3F2FD;
+    --green:#2E7D32;
+    --green-mid:#388E3C;
+    --green-light:#4CAF50;
+    --green-pale:#E8F5E9;
+    --white:#fff;
+    --gray:#f5f5f5;
+    --text:#1a1a1a;
+    --text-muted:#555;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);overflow-x:hidden;}
+
+  /* ── NAV ── */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    background:rgba(13,71,161,0.97);
+    backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 2rem;height:68px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.3);
+    transition:background .3s;
+  }
+  .nav-logo{
+    display:flex;align-items:center;gap:.6rem;
+    font-size:1.35rem;font-weight:700;color:#fff;text-decoration:none;letter-spacing:.02em;
+  }
+  .nav-logo span{color:#4CAF50;}
+  .nav-links{display:flex;gap:2rem;list-style:none;}
+  .nav-links a{
+    color:rgba(255,255,255,.88);text-decoration:none;font-size:.95rem;font-weight:500;
+    transition:color .2s;position:relative;padding-bottom:4px;
+  }
+  .nav-links a::after{
+    content:'';position:absolute;bottom:0;left:0;width:0;height:2px;
+    background:var(--green-light);transition:width .25s;
+  }
+  .nav-links a:hover{color:#fff;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{
+    background:var(--green-mid);color:#fff;padding:.55rem 1.3rem;border-radius:6px;
+    text-decoration:none;font-weight:600;font-size:.9rem;
+    transition:background .2s,transform .15s;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--green-light);transform:translateY(-1px);}
+  .hamburger{
+    display:none;flex-direction:column;gap:5px;cursor:pointer;
+    background:none;border:none;padding:6px;
+  }
+  .hamburger span{
+    display:block;width:26px;height:2.5px;background:#fff;
+    border-radius:2px;transition:transform .3s,opacity .3s;
+  }
+  .hamburger.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg);}
+  .mobile-menu{
+    display:none;position:fixed;top:68px;left:0;right:0;z-index:999;
+    background:var(--blue-dark);padding:1.5rem 2rem;
+    transform:translateY(-10px);opacity:0;
+    transition:opacity .25s,transform .25s;pointer-events:none;
+  }
+  .mobile-menu.open{display:block;opacity:1;transform:translateY(0);pointer-events:all;}
+  .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:1.2rem;}
+  .mobile-menu a{color:#fff;text-decoration:none;font-size:1.1rem;font-weight:500;}
+  .mobile-menu a:hover{color:var(--green-light);}
+  .mobile-menu .mob-cta{
+    display:inline-block;margin-top:1rem;
+    background:var(--green-mid);color:#fff;padding:.7rem 1.6rem;
+    border-radius:6px;font-weight:700;text-decoration:none;
+  }
+
+  /* ── HERO ── */
+  .hero{
+    min-height:100vh;position:relative;overflow:hidden;
+    display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:10rem;
+    background:url("img/landing.jpg") center center / cover no-repeat;
+  }
+  .hero-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+  /* Top-left shimmer beams */
+  .shimmer-beam{
+    position:absolute;
+    top:-10%;
+    left:-10%;
+    width:3px;
+    border-radius:2px;
+    background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 40%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0) 100%);
+    animation:shimmer-sweep ease-in-out infinite;
+    transform-origin:top left;
+    filter:blur(1px);
+  }
+  @keyframes shimmer-sweep{
+    0%  { transform: rotate(30deg) translateY(-120%); opacity:0; }
+    8%  { opacity:1; }
+    92% { opacity:0.7; }
+    100%{ transform: rotate(30deg) translateY(160vh); opacity:0; }
+  }
+  /* Soft radial glow pulse from top-left */
+  .shimmer-glow{
+    position:absolute;
+    top:-20%;
+    left:-20%;
+    width:70vw;
+    height:70vw;
+    border-radius:50%;
+    background:radial-gradient(ellipse at top left, rgba(255,255,255,0.10) 0%, rgba(100,181,246,0.06) 40%, transparent 70%);
+    animation:glow-pulse 5s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes glow-pulse{
+    0%,100%{ transform:scale(1);   opacity:0.6; }
+    50%     { transform:scale(1.12);opacity:1;   }
+  }
+  .hero-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(13,71,161,0.82) 0%,rgba(13,71,161,0.65) 50%,rgba(27,94,32,0.75) 100%);
+  }
+  .hero-content{
+    position:relative;z-index:2;text-align:center;
+    max-width:780px;padding:2rem 1.5rem;
+  }
+  .hero-badge{
+    display:inline-block;background:rgba(76,175,80,.25);
+    border:1px solid rgba(76,175,80,.5);color:#A5D6A7;
+    font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    padding:.4rem 1rem;border-radius:20px;margin-bottom:1.5rem;
+    animation:fadeDown .7s ease both;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;color:#fff;
+    line-height:1.1;margin-bottom:1.2rem;
+    animation:fadeDown .7s .15s ease both;
+  }
+  .hero h1 .accent{color:#69F0AE;}
+  .hero p{
+    font-size:clamp(1rem,2.5vw,1.2rem);color:rgba(255,255,255,.82);
+    line-height:1.7;margin-bottom:2.2rem;
+    animation:fadeDown .7s .3s ease both;
+  }
+  .hero-btns{
+    display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+    animation:fadeDown .7s .45s ease both;
+  }
+  .btn-primary{
+    background:var(--green-mid);color:#fff;padding:.85rem 2rem;
+    border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem;
+    transition:background .2s,transform .15s,box-shadow .2s;
+    box-shadow:0 4px 16px rgba(46,125,50,.5);
+  }
+  .btn-primary:hover{background:var(--green-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(46,125,50,.55);}
+  .btn-outline{
+    background:transparent;color:#fff;padding:.85rem 2rem;
+    border:2px solid rgba(255,255,255,.55);border-radius:8px;
+    text-decoration:none;font-weight:600;font-size:1rem;
+    transition:border-color .2s,background .2s,transform .15s;
+  }
+  .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);}
+  @keyframes fadeDown{
+    from{opacity:0;transform:translateY(-20px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .hero-stats{
+    position:absolute;bottom:2.5rem;left:0;right:0;
+    display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;
+    animation:fadeUp .8s .7s ease both;
+    z-index:2;
+  }
+  .stat{text-align:center;}
+  .stat-num{font-size:1.8rem;font-weight:800;color:#69F0AE;}
+  .stat-label{font-size:.8rem;color:rgba(255,255,255,.7);letter-spacing:.05em;text-transform:uppercase;}
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .scroll-indicator{
+    position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);
+    z-index:2;animation:bounce 2s infinite;
+  }
+  .scroll-indicator svg{opacity:.6;}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+
+  /* ── SECTION GENERIC ── */
+  section{padding:5rem 1.5rem;}
+  .container{max-width:1100px;margin:0 auto;}
+  .section-tag{
+    display:inline-block;background:var(--blue-pale);color:var(--blue);
+    font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:.35rem .9rem;border-radius:20px;margin-bottom:.8rem;
+  }
+  .section-tag.green{background:var(--green-pale);color:var(--green);}
+  h2.section-title{
+    font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;color:var(--blue-dark);
+    line-height:1.2;margin-bottom:.8rem;
+  }
+  .section-sub{font-size:1.05rem;color:var(--text-muted);max-width:560px;line-height:1.7;}
+
+  /* ── SERVICES ── */
+  .services{background:#fff;}
+  .services-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:1.5rem;margin-top:3rem;
+  }
+  .service-card{
+    background:#fff;border:1.5px solid #e0e0e0;border-radius:16px;
+    padding:2rem 1.6rem;transition:transform .25s,box-shadow .25s,border-color .25s;
+    position:relative;overflow:hidden;
+  }
+  .service-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,var(--blue),var(--green-mid));
+    transform:scaleX(0);transform-origin:left;transition:transform .3s;
+  }
+  .service-card:hover::before{transform:scaleX(1);}
+  .service-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 16px 40px rgba(21,101,192,.12);
+    border-color:var(--blue-light);
+  }
+  .service-icon{
+    width:56px;height:56px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.7rem;margin-bottom:1.2rem;
+  }
+  .icon-blue{background:var(--blue-pale);}
+  .icon-green{background:var(--green-pale);}
+  .service-card h3{font-size:1.15rem;font-weight:700;color:var(--blue-dark);margin-bottom:.6rem;}
+  .service-card p{font-size:.92rem;color:var(--text-muted);line-height:1.65;}
+
+  /* ── WHY US ── */
+  .why{background:var(--gray);}
+  .why-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+    align-items:center;margin-top:2.5rem;
+  }
+  .why-list{display:flex;flex-direction:column;gap:1.4rem;}
+  .why-item{display:flex;gap:1rem;align-items:flex-start;}
+  .why-check{
+    min-width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,var(--blue),var(--green-mid));
+    display:flex;align-items:center;justify-content:center;margin-top:2px;
+  }
+  .why-check svg{width:18px;height:18px;}
+  .why-item h4{font-size:1rem;font-weight:700;color:var(--blue-dark);margin-bottom:.3rem;}
+  .why-item p{font-size:.9rem;color:var(--text-muted);line-height:1.6;}
+  .why-visual{
+    background:linear-gradient(135deg,var(--blue-dark),var(--green));
+    border-radius:20px;padding:2.5rem;color:#fff;
+    display:flex;flex-direction:column;gap:1.5rem;
+    position:relative;overflow:hidden;
+  }
+  .why-visual::before{
+    content:'';position:absolute;top:-40px;right:-40px;
+    width:180px;height:180px;border-radius:50%;
+    background:rgba(255,255,255,.07);
+  }
+  .why-visual::after{
+    content:'';position:absolute;bottom:-60px;left:-30px;
+    width:220px;height:220px;border-radius:50%;
+    background:rgba(255,255,255,.05);
+  }
+  .why-visual h3{font-size:1.5rem;font-weight:800;position:relative;z-index:1;}
+  .why-visual p{font-size:1rem;opacity:.85;line-height:1.7;position:relative;z-index:1;}
+  .phone-btn{
+    display:inline-flex;align-items:center;gap:.6rem;
+    background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.6);
+    color:#fff;padding:.75rem 1.5rem;border-radius:10px;
+    text-decoration:none;font-weight:700;font-size:1rem;
+    transition:background .2s;width:fit-content;position:relative;z-index:1;
+  }
+  .phone-btn:hover{background:rgba(255,255,255,.3);}
+
+  /* ── PROCESS ── */
+  .process{background:#fff;}
+  .steps{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:2rem;margin-top:3rem;position:relative;
+  }
+  .steps::before{
+    content:'';position:absolute;top:36px;left:10%;right:10%;height:2px;
+    background:linear-gradient(90deg,var(--blue),var(--green-mid));
+    z-index:0;
+  }
+  .step{text-align:center;position:relative;z-index:1;}
+  .step-num{
+    width:72px;height:72px;border-radius:50%;margin:0 auto 1.2rem;
+    background:linear-gradient(135deg,var(--blue),var(--green-mid));
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;font-weight:800;color:#fff;
+    box-shadow:0 6px 20px rgba(21,101,192,.3);
+  }
+  .step h4{font-size:1rem;font-weight:700;color:var(--blue-dark);margin-bottom:.5rem;}
+  .step p{font-size:.88rem;color:var(--text-muted);line-height:1.6;}
+
+  /* ── TESTIMONIALS ── */
+  .testimonials{background:linear-gradient(135deg,var(--blue-dark) 0%,#1B5E20 100%);}
+  .testimonials .section-title{color:#fff;}
+  .testimonials .section-sub{color:rgba(255,255,255,.75);}
+  .testimonials .section-tag{background:rgba(255,255,255,.15);color:#fff;}
+  .reviews-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:1.5rem;margin-top:3rem;
+  }
+  .review-card{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+    border-radius:16px;padding:1.8rem;color:#fff;
+    transition:background .25s,transform .25s;
+  }
+  .review-card:hover{background:rgba(255,255,255,.16);transform:translateY(-4px);}
+  .stars{color:#FFD700;font-size:1rem;margin-bottom:.9rem;letter-spacing:2px;}
+  .review-text{font-size:.93rem;line-height:1.7;opacity:.9;margin-bottom:1rem;}
+  .reviewer{font-size:.85rem;font-weight:700;color:#A5D6A7;}
+
+  /* ── CTA ── */
+  .cta-section{background:var(--gray);}
+  .cta-box{
+    background:linear-gradient(135deg,var(--blue-dark),#1B5E20);
+    border-radius:24px;padding:4rem 3rem;text-align:center;color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .cta-box::before{
+    content:'';position:absolute;top:-80px;right:-80px;
+    width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.06);
+  }
+  .cta-box h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:.8rem;}
+  .cta-box p{font-size:1.05rem;opacity:.85;margin-bottom:2rem;max-width:500px;margin-left:auto;margin-right:auto;}
+  .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+  .cta-green{
+    background:var(--green-mid);color:#fff;padding:.9rem 2.2rem;
+    border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem;
+    transition:background .2s,transform .15s;
+  }
+  .cta-green:hover{background:var(--green-light);transform:translateY(-2px);}
+  .cta-white{
+    background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.6);
+    color:#fff;padding:.9rem 2.2rem;border-radius:8px;
+    text-decoration:none;font-weight:600;font-size:1rem;
+    transition:background .2s;
+  }
+  .cta-white:hover{background:rgba(255,255,255,.25);}
+
+  /* ── FOOTER ── */
+  footer{background:var(--blue-dark);color:rgba(255,255,255,.8);padding:3rem 1.5rem 1.5rem;}
+  .footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;
+    max-width:1100px;margin:0 auto;padding-bottom:2.5rem;
+    border-bottom:1px solid rgba(255,255,255,.15);
+  }
+  .footer-brand{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:.8rem;}
+  .footer-brand span{color:#69F0AE;}
+  footer p.tagline{font-size:.9rem;line-height:1.7;margin-bottom:1.2rem;}
+  .footer-contact a{
+    color:var(--green-light);text-decoration:none;font-weight:600;
+    display:flex;align-items:center;gap:.4rem;font-size:1.05rem;
+  }
+  footer h4{color:#fff;font-size:.95rem;font-weight:700;margin-bottom:1rem;letter-spacing:.05em;text-transform:uppercase;}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+  footer ul a{color:rgba(255,255,255,.7);text-decoration:none;font-size:.9rem;transition:color .2s;}
+  footer ul a:hover{color:#69F0AE;}
+  .footer-bottom{
+    max-width:1100px;margin:1.5rem auto 0;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:.82rem;opacity:.6;flex-wrap:wrap;gap:.5rem;
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .reveal-left{opacity:0;transform:translateX(-30px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal-left.visible{opacity:1;transform:translateX(0);}
+  .reveal-right{opacity:0;transform:translateX(30px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal-right.visible{opacity:1;transform:translateX(0);}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    .nav-links,.nav-cta-desktop{display:none;}
+    .hamburger{display:flex;}
+    .why-grid{grid-template-columns:1fr;}
+    .steps::before{display:none;}
+    .footer-grid{grid-template-columns:1fr;}
+    .hero-stats{gap:1.5rem;}
+    .cta-box{padding:2.5rem 1.5rem;}
+  }
+  @media(max-width:480px){
+    .hero h1{font-size:2rem;}
+    .hero-btns{flex-direction:column;align-items:center;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#"><img src="img/logo.jpg" alt="ClearSpace Junk Removal" style="height:52px;width:auto;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.4));"></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#process">How It Works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta nav-cta-desktop" href="tel:6183152226">&#128222; (618) 315-2226</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#services" class="mob-link">Services</a></li>
+    <li><a href="#why" class="mob-link">Why Us</a></li>
+    <li><a href="#process" class="mob-link">How It Works</a></li>
+    <li><a href="#reviews" class="mob-link">Reviews</a></li>
+    <li><a href="#contact" class="mob-link">Contact</a></li>
+  </ul>
+  <a href="tel:6183152226" class="mob-cta">&#128222; (618) 315-2226</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">&#127968; Southern Illinois' #1 Junk Removal</div>
+    <h1>Reclaim Your Space.<br>We'll <span class="accent">Haul It Away.</span></h1>
+    <p>Fast, affordable, and eco-friendly junk removal for homes and businesses across Southern Illinois. Same-day service available — just point, and we'll take care of the rest.</p>
+    <div class="hero-btns">
+      <a href="sms:6183152226" class="btn-primary">&#128172; Text for a Free Quote</a>
+      <a href="tel:6183152226" class="btn-outline">&#128222; Call (618) 315-2226</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">Same Day</div><div class="stat-label">Service Available</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Satisfaction Guaranteed</div></div>
+    <div class="stat"><div class="stat-num">Local</div><div class="stat-label">Southern Illinois</div></div>
+    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Estimates</div></div>
+  </div>
+  <div class="scroll-indicator">
+    <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+      <path d="M12 5v14M5 12l7 7 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-tag">What We Do</span>
+      <h2 class="section-title">Services We Offer</h2>
+      <p class="section-sub">From a single item to a full cleanout — residential, commercial, or construction — we handle it all.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal" style="transition-delay:.1s">
+        <div class="service-icon icon-blue">🏠</div>
+        <h3>Residential Junk Removal</h3>
+        <p>Clearing out furniture, appliances, electronics, clothing, and household clutter. We handle all the heavy lifting so you don't have to.</p>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.2s">
+        <div class="service-icon icon-green">🏢</div>
+        <h3>Commercial Cleanouts</h3>
+        <p>Office equipment, retail fixtures, warehouse materials — efficient removal with minimal disruption to your business operations.</p>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.3s">
+        <div class="service-icon icon-blue">🚜</div>
+        <h3>Construction Debris</h3>
+        <p>Demo waste, drywall, lumber, concrete, roofing materials — we haul away construction and renovation debris quickly and safely.</p>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.4s">
+        <div class="service-icon icon-green">🛋️</div>
+        <h3>Furniture & Appliances</h3>
+        <p>Sofas, mattresses, washers, dryers, refrigerators — bulky items are no problem. We load, haul, and dispose responsibly.</p>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.5s">
+        <div class="service-icon icon-blue">🏚️</div>
+        <h3>Estate & Garage Cleanouts</h3>
+        <p>Full estate cleanouts, garage clearing, attic and basement hauls — we can clear an entire property in a single visit.</p>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.6s">
+        <div class="service-icon icon-green">♻️</div>
+        <h3>Eco-Friendly Disposal</h3>
+        <p>We prioritize donation, recycling, and responsible disposal to keep as much as possible out of landfills.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="why-grid">
+      <div class="reveal-left">
+        <span class="section-tag green">Why ClearSpace</span>
+        <h2 class="section-title">Southern Illinois Trusted</h2>
+        <div class="why-list" style="margin-top:2rem;">
+          <div class="why-item">
+            <div class="why-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Same-Day & Next-Day Service</h4>
+              <p>Need it gone fast? We offer same-day appointments throughout the Southern Illinois area.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Upfront, Transparent Pricing</h4>
+              <p>No hidden fees. Volume-based pricing means you only pay for the space your junk takes up.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Professional & Courteous Team</h4>
+              <p>Friendly service, on-time arrivals, and we leave the area clean after every job.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Locally Owned & Operated</h4>
+              <p>ClearSpace is a proud Southern Illinois business — we're your neighbors, not a franchise chain.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="why-visual">
+          <h3>Ready to Clear Your Space?</h3>
+          <p>Text or call Christian directly for a free, no-obligation quote. We respond fast and can usually get to you the same day.</p>
+          <a href="tel:6183152226" class="phone-btn">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.43 9.16a19.79 19.79 0 01-3.07-8.67A2 2 0 012.54 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.52a16 16 0 006.29 6.29l1.88-1.88a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            (618) 315-2226
+          </a>
+          <p style="font-size:.85rem;opacity:.7;">&#128172; Text us anytime — we're always checking!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <span class="section-tag">Simple Process</span>
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-sub" style="margin:0 auto;">Getting rid of your junk is as easy as 1-2-3.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal" style="transition-delay:.1s">
+        <div class="step-num">1</div>
+        <h4>Call or Text Us</h4>
+        <p>Reach out to Christian at (618) 315-2226 for a free quote. Tell us what you've got and where you are.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.25s">
+        <div class="step-num">2</div>
+        <h4>We Arrive & Quote</h4>
+        <p>Our crew shows up on schedule, takes a look, and gives you a final no-obligation price before we start.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.4s">
+        <div class="step-num">3</div>
+        <h4>We Haul It Away</h4>
+        <p>You approve, we load everything up and leave your space clean. Fast, hassle-free, and done right.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.55s">
+        <div class="step-num">4</div>
+        <h4>Responsible Disposal</h4>
+        <p>We sort items for donation, recycling, or proper disposal — because we care about our community.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <span class="section-tag">Happy Customers</span>
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-sub" style="margin:0 auto;">We take pride in every job, big or small.</p>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal" style="transition-delay:.1s">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">"Christian and his crew were fantastic. They showed up on time, worked quickly, and were super professional. The price was fair and our garage finally has room to breathe!"</p>
+        <div class="reviewer">— Sarah M., Mount Vernon, IL</div>
+      </div>
+      <div class="review-card reveal" style="transition-delay:.2s">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">"Called in the morning and they were there by noon. Cleared out an entire basement full of old furniture and junk in under two hours. Couldn't believe how fast they worked. Highly recommend!"</p>
+        <div class="reviewer">— Mike T., Benton, IL</div>
+      </div>
+      <div class="review-card reveal" style="transition-delay:.3s">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">"Best price I could find in Southern Illinois. ClearSpace came out for a commercial cleanout at our office and did an incredible job. Will be using them for all our future needs."</p>
+        <div class="reviewer">— Rachel D., Carbondale, IL</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Ready to Clear Your Space?</h2>
+      <p>Contact Christian Rhymer today for a free estimate. Available for same-day service across Southern Illinois.</p>
+      <div class="cta-btns">
+        <a href="tel:6183152226" class="cta-green">&#128222; Call (618) 315-2226</a>
+        <a href="sms:6183152226" class="cta-white">&#128172; Send a Text</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Clear<span>Space</span> Junk Removal</div>
+      <p class="tagline">Serving Southern Illinois with fast, affordable, and professional junk removal. Locally owned and operated by Christian Rhymer.</p>
+      <div class="footer-contact"><a href="tel:6183152226">&#128222; (618) 315-2226</a></div>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#why">Why ClearSpace</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Residential Cleanouts</a></li>
+        <li><a href="#services">Commercial Junk Removal</a></li>
+        <li><a href="#services">Construction Debris</a></li>
+        <li><a href="#services">Furniture & Appliances</a></li>
+        <li><a href="#services">Estate Cleanouts</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ClearSpace Junk Removal. All rights reserved.</span>
+    <span>Southern Illinois · (618) 315-2226</span>
+  </div>
+</footer>
+
+<script>
+// Top-left shimmer beams
+const container = document.getElementById('particles');
+// One persistent glow orb
+const glow = document.createElement('div');
+glow.className = 'shimmer-glow';
+container.appendChild(glow);
+// Individual light beams fanning from top-left
+const beamCount = 14;
+for(let i = 0; i < beamCount; i++){
+  const b = document.createElement('div');
+  const height = Math.random()*280+120;
+  const dur   = Math.random()*10+8;
+  const delay = Math.random()*-dur;
+  // Spread beams in a 50-degree fan from top-left corner
+  const spread = (i / beamCount) * 50; // 0–50deg offset
+  const opacity = Math.random()*0.35+0.1;
+  b.className = 'shimmer-beam';
+  b.style.cssText = `height:${height}px;animation-duration:${dur}s;animation-delay:${delay}s;opacity:${opacity};transform:rotate(${30+spread}deg) translateY(-120%);`;
+  container.appendChild(b);
+}
+
+// Hamburger
+const ham = document.getElementById('hamburger');
+const mob = document.getElementById('mobileMenu');
+ham.addEventListener('click',()=>{
+  ham.classList.toggle('open');
+  mob.classList.toggle('open');
+});
+document.querySelectorAll('.mob-link').forEach(l=>l.addEventListener('click',()=>{
+  ham.classList.remove('open');mob.classList.remove('open');
+}));
+
+// Scroll animations
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.12});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>observer.observe(el));
+
+// Navbar on scroll
+window.addEventListener('scroll',()=>{
+  const nav = document.getElementById('navbar');
+  nav.style.background = window.scrollY>60 ? 'rgba(13,71,161,0.99)' : 'rgba(13,71,161,0.97)';
+});
+</script>
+</body>
+</html>
